@@ -10,7 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.playcooltimer.ui.MainScreen
-import com.example.playcooltimer.ui.SettingsScreen
+import com.example.playcooltimer.ui.settings.SettingsScreen
 import com.example.playcooltimer.ui.theme.PlayCoolTimerTheme
 
 class MainActivity : ComponentActivity() {

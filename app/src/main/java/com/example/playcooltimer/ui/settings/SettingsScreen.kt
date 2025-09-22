@@ -1,4 +1,4 @@
-package com.example.playcooltimer.ui
+package com.example.playcooltimer.ui.settings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,6 +30,12 @@ import com.example.playcooltimer.TimerViewModel
 @Composable
 fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
     val settings by viewModel.setting.collectAsState()
+
+    // 初期値を ViewModel から取得して remember にセット
+    var playMinutes by remember(settings) { mutableStateOf(settings.playMinutes) }
+    var playSeconds by remember(settings) { mutableStateOf(settings.playSeconds) }
+    var coolMinutes by remember(settings) { mutableStateOf(settings.coolMinutes) }
+    var coolSeconds by remember(settings) { mutableStateOf(settings.coolSeconds) }
 
     Scaffold(
         topBar = {
@@ -49,37 +58,33 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
         ) {
             // --- Play Time ---
             Text("Play Time (min:sec)")
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                NumberSelector(
-                    value = settings.playMinutes,
-                    range = 0..59,
-                    onValueChange = { viewModel.updatePlayTime(it, settings.playSeconds) },
-                    label = "分"
-                )
-                NumberSelector(
-                    value = settings.playSeconds,
-                    range = 1..59,
-                    onValueChange = { viewModel.updatePlayTime(settings.playMinutes, it) },
-                    label = "秒"
-                )
-            }
+            MinuteSecondPicker(
+                minutes = playMinutes,
+                seconds = playSeconds,
+                onMinutesChange = {
+                    playMinutes = it
+                    viewModel.updatePlayTime(it, playSeconds) // ViewModelも更新
+                    },
+                onSecondsChange = {
+                    playSeconds = it
+                    viewModel.updatePlayTime(playMinutes, it) // ViewModelも更新
+                }
+            )
 
             // --- Cool Time ---
             Text("Cool Time (min:sec)")
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                NumberSelector(
-                    value = settings.coolMinutes,
-                    range = 0..59,
-                    onValueChange = { viewModel.updateCoolTime(it, settings.coolSeconds) },
-                    label = "分"
-                )
-                NumberSelector(
-                    value = settings.coolSeconds,
-                    range = 1..59,
-                    onValueChange = { viewModel.updateCoolTime(settings.coolMinutes, it) },
-                    label = "秒"
-                )
-            }
+            MinuteSecondPicker(
+                minutes = coolMinutes,
+                seconds = coolSeconds,
+                onMinutesChange = {
+                    coolMinutes = it
+                    viewModel.updateCoolTime(it, coolSeconds) // ViewModelも更新
+                },
+                onSecondsChange = {
+                    coolSeconds = it
+                    viewModel.updateCoolTime(coolMinutes, it) // ViewModelも更新
+                }
+            )
 
             // --- bellStart Volume ---
             Text("bellStart Volume (${settings.bellStartVolume})")

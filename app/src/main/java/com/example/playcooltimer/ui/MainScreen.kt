@@ -47,6 +47,7 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
     val coolTimeInit = (setting.coolMinutes * 60) + setting.coolSeconds
     val bellStartInit = setting.bellStartVolume.toFloat() / 10
     val bellCoolInit = setting.bellCoolVolume.toFloat() / 10
+    var repeatCountInit = setting.repeatCount
 
     var playTimeLeft by remember { mutableStateOf(playTimeInit) }
     var playMilliLeft by remember { mutableStateOf(0L) }
@@ -61,6 +62,22 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
     bellStart.setVolume(bellStartInit, bellStartInit)
     val bellCool = remember { MediaPlayer.create(context, R.raw.cool_bell) }
     bellCool.setVolume(bellCoolInit, bellCoolInit)
+
+//    var repeatCount by remember { mutableStateOf(repeatCountInit) }
+
+    val resetTimerLambda: () -> Unit
+
+    fun resetTimer() {
+        timer?.cancel()
+        playTimeLeft = playTimeInit
+        playMilliLeft = 0
+        coolTimeLeft = coolTimeInit
+        isPlayPhase = true
+        isRunning = false
+        repeatCountInit = setting.repeatCount
+    }
+
+    resetTimerLambda = { resetTimer() }
 
     fun startTimer() {
         timer?.cancel()
@@ -81,16 +98,22 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
             }
             override fun onFinish() {
                 if (isPlayPhase) {
+                    repeatCountInit -= 1
                     bellCool.start()
                     isPlayPhase = false
+                    if (repeatCountInit != 0) {
+                        startTimer()
+                    } else {
+                        resetTimerLambda()
+                    }
                 } else {
                     bellStart.start()
                     isPlayPhase = true
+                    playTimeLeft = playTimeInit
+                    playMilliLeft = 0
+                    coolTimeLeft = coolTimeInit
+                    startTimer()
                 }
-                playTimeLeft = playTimeInit
-                playMilliLeft = 0
-                coolTimeLeft = coolTimeInit
-                startTimer()
             }
         }.start()
         isRunning = true
@@ -98,15 +121,6 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
 
     fun pauseTimer() {
         timer?.cancel()
-        isRunning = false
-    }
-
-    fun resetTimer() {
-        timer?.cancel()
-        playTimeLeft = playTimeInit
-        playMilliLeft = 0
-        coolTimeLeft = coolTimeInit
-        isPlayPhase = true
         isRunning = false
     }
 

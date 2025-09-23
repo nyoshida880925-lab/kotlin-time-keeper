@@ -45,6 +45,8 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
     val setting by viewModel.setting.collectAsState()
     val playTimeInit = (setting.playMinutes * 60) + setting.playSeconds
     val coolTimeInit = (setting.coolMinutes * 60) + setting.coolSeconds
+    val bellStartInit = setting.bellStartVolume.toFloat() / 10
+    val bellCoolInit = setting.bellCoolVolume.toFloat() / 10
 
     var playTimeLeft by remember { mutableStateOf(playTimeInit) }
     var playMilliLeft by remember { mutableStateOf(0L) }
@@ -56,9 +58,9 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
 
     val context = LocalContext.current
     val bellStart = remember { MediaPlayer.create(context, R.raw.start_bell) }
-    bellStart.setVolume(1.0f, 1.0f)
+    bellStart.setVolume(bellStartInit, bellStartInit)
     val bellCool = remember { MediaPlayer.create(context, R.raw.cool_bell) }
-    bellCool.setVolume(1.0f, 1.0f)
+    bellCool.setVolume(bellCoolInit, bellCoolInit)
 
     fun startTimer() {
         timer?.cancel()

@@ -52,7 +52,7 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(48.dp, 100.dp, 24.dp, 24.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
 
         ) {

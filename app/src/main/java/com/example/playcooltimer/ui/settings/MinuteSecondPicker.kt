@@ -19,8 +19,8 @@ fun MinuteSecondPicker(
 ) {
     Row(
         modifier = Modifier
-            .padding(vertical = 16.dp)
-            .height(180.dp),
+            .padding(vertical = 8.dp)
+            .height(120.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {

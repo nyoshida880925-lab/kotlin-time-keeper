@@ -16,6 +16,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -24,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.playcooltimer.TimerSettings
 import com.example.playcooltimer.TimerViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +39,38 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
     var playSeconds by remember(settings) { mutableStateOf(settings.playSeconds) }
     var coolMinutes by remember(settings) { mutableStateOf(settings.coolMinutes) }
     var coolSeconds by remember(settings) { mutableStateOf(settings.coolSeconds) }
+    var bellStartVolume by remember(settings) { mutableStateOf(settings.bellStartVolume) }
+    var bellCoolVolume by remember(settings) { mutableStateOf(settings.bellCoolVolume) }
+    var repeatCount by remember(settings) { mutableStateOf(settings.repeatCount) }
+
+    fun updateStore() {
+        viewModel.saveSetting(
+            TimerSettings(
+                playMinutes,
+                playSeconds,
+                coolMinutes,
+                coolSeconds,
+                bellStartVolume,
+                bellCoolVolume,
+                repeatCount
+            )
+        )
+    }
+
+    LaunchedEffect(playMinutes, playSeconds, coolMinutes, coolSeconds, bellStartVolume, bellCoolVolume, repeatCount) {
+        delay(500L)
+        viewModel.saveSetting(
+            TimerSettings(
+                playMinutes,
+                playSeconds,
+                coolMinutes,
+                coolSeconds,
+                bellStartVolume,
+                bellCoolVolume,
+                repeatCount
+            )
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -63,11 +98,9 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
                 seconds = playSeconds,
                 onMinutesChange = {
                     playMinutes = it
-                    viewModel.updatePlayTime(it, playSeconds) // ViewModelも更新
                     },
                 onSecondsChange = {
                     playSeconds = it
-                    viewModel.updatePlayTime(playMinutes, it) // ViewModelも更新
                 }
             )
 
@@ -78,11 +111,9 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
                 seconds = coolSeconds,
                 onMinutesChange = {
                     coolMinutes = it
-                    viewModel.updateCoolTime(it, coolSeconds) // ViewModelも更新
                 },
                 onSecondsChange = {
                     coolSeconds = it
-                    viewModel.updateCoolTime(coolMinutes, it) // ViewModelも更新
                 }
             )
 
@@ -90,7 +121,9 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
             Text("bellStart Volume (${settings.bellStartVolume})")
             Slider(
                 value = settings.bellStartVolume.toFloat(),
-                onValueChange = { viewModel.updateBellStartVolume(it.toInt()) },
+                onValueChange = {
+                    bellStartVolume = it.toInt()
+                },
                 valueRange = 0f..10f,
                 steps = 10
             )
@@ -99,7 +132,9 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
             Text("bellCool Volume (${settings.bellCoolVolume})")
             Slider(
                 value = settings.bellCoolVolume.toFloat(),
-                onValueChange = { viewModel.updateBellCoolVolume(it.toInt()) },
+                onValueChange = {
+                    bellCoolVolume = it.toInt()
+                },
                 valueRange = 0f..10f,
                 steps = 10
             )
@@ -109,7 +144,10 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
             NumberSelector(
                 value = settings.repeatCount,
                 range = 1..99,
-                onValueChange = { viewModel.updateRepeatCount(it) },
+                onValueChange = {
+                    repeatCount = it
+                    updateStore()
+                },
                 label = "回"
             )
         }

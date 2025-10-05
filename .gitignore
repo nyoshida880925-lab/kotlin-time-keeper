@@ -28,3 +28,10 @@ replay_pid*
 .gradle/
 build/
 out/.gradle/
+
+.idea/*
+!.idea/codeStyles
+!.idea/inspectionProfiles
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/vcs.xml

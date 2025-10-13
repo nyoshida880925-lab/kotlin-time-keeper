@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -37,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playcooltimer.R
 import com.example.playcooltimer.TimerViewModel
+import com.example.playcooltimer.ui.theme.DigitalFont
 
 @SuppressLint("DefaultLocale")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,8 +63,6 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
     val bellCool = remember { MediaPlayer.create(context, R.raw.cool_bell) }
     bellCool.setVolume(bellCoolInit, bellCoolInit)
 
-//    var repeatCount by remember { mutableStateOf(repeatCountInit) }
-
     val resetTimerLambda: () -> Unit
 
     fun resetTimer() {
@@ -81,6 +79,7 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
 
     fun startTimer() {
         timer?.cancel()
+        if (isPlayPhase) repeatCountInit -= 1
         val totalMillis =
             if (isPlayPhase) playTimeLeft * 1000L + playMilliLeft
             else coolTimeLeft * 1000L
@@ -98,7 +97,6 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
             }
             override fun onFinish() {
                 if (isPlayPhase) {
-                    repeatCountInit -= 1
                     bellCool.start()
                     isPlayPhase = false
                     if (repeatCountInit != 0) {
@@ -139,15 +137,15 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = Color(0xFF303030))
+                .background(color = Color(0xFF0D0D0D))
                 .padding(48.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 "Play Time",
-                fontSize = 32.sp,
-                color = Color(0xFFF2F2F2),
+                fontSize = 24.sp,
+                color = Color(0xFF6EC046),
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentWidth(Alignment.Start)
@@ -171,7 +169,8 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
                     }
                 },
                 fontSize = 82.sp,
-                color = Color(0xFFF2F2F2)
+                fontFamily = DigitalFont,
+                color = Color(0xFF6EC046)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -182,7 +181,7 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
                 Text(
                     "Cool Time",
                     fontSize = 24.sp,
-                    color = Color(0xFFF2F2F2),
+                    color = Color(0xFF6EC046),
                     modifier = Modifier
                         .wrapContentWidth(Alignment.Start)
                 )
@@ -193,10 +192,36 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
                         coolTimeLeft % 60
                     ),
                     fontSize = 48.sp,
-                    color = Color(0xFFF2F2F2),
+                    fontFamily = DigitalFont,
+                    color = Color(0xFF6EC046),
                     modifier = Modifier
                         .wrapContentWidth(Alignment.Start)
                         .padding(12.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row {
+                Text(
+                     "Repeat Count",
+                    fontSize = 24.sp,
+                    color = Color(0xFF6EC046),
+                    modifier = Modifier
+                        .wrapContentWidth(Alignment.Start)
+                )
+                Text(
+                    text = String.format(
+                        "%2d/%2d",
+                        repeatCountInit,
+                        setting.repeatCount
+                    ),
+                    fontSize = 24.sp,
+                    color = Color(0xFF6EC046),
+                    fontFamily = DigitalFont,
+                    modifier = Modifier
+                        .wrapContentWidth(Alignment.Start)
+                        .padding(12.dp, 0.dp, 0.dp, 0.dp)
                 )
             }
 
@@ -207,10 +232,10 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
                     onClick = { resetTimer() },
                     enabled = !isRunning,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = Color(0xFFF2F2F2),
-                        disabledContainerColor = Color(0xFF822E2E),
-                        disabledContentColor = Color(0xFFF2F2F2)
+                        containerColor = Color(0xFF182315),
+                        contentColor = Color(0xFF6EC046),
+                        disabledContainerColor = Color(0xFF182315),
+                        disabledContentColor = Color(0xFF477B2E)
                     ),
                     modifier = Modifier.padding(8.dp)
                 ) {
@@ -218,7 +243,11 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
                 }
                 Button(
                     onClick = { if (isRunning) pauseTimer() else startTimer() },
-                    modifier = Modifier.padding(8.dp)
+                    modifier = Modifier.padding(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF182315),
+                        contentColor = Color(0xFF6EC046)
+                    )
                 ) {
                     Text(if (isRunning) "ストップ" else "スタート")
                 }

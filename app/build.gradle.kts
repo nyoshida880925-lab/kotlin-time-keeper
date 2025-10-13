@@ -68,4 +68,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
     implementation("androidx.navigation:navigation-compose:2.7.3")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.7.0")
 }

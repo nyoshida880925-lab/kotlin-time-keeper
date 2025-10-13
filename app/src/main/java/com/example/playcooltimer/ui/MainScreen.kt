@@ -49,9 +49,9 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
     val bellCoolInit = setting.bellCoolVolume.toFloat() / 10
     var repeatCountInit = setting.repeatCount
 
-    var playTimeLeft by remember { mutableStateOf(playTimeInit) }
+    var playTimeLeft by remember(playTimeInit) { mutableStateOf(playTimeInit) }
     var playMilliLeft by remember { mutableStateOf(0L) }
-    var coolTimeLeft by remember { mutableStateOf(coolTimeInit) }
+    var coolTimeLeft by remember(coolTimeInit) { mutableStateOf(coolTimeInit) }
 
     var isRunning by remember { mutableStateOf(false) }
     var isPlayPhase by remember { mutableStateOf(true) }

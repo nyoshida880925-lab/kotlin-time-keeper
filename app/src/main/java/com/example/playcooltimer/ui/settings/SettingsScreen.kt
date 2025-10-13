@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.playcooltimer.TimerSettings
 import com.example.playcooltimer.TimerViewModel
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,13 +34,13 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
     val settings by viewModel.setting.collectAsState()
 
     // 初期値を ViewModel から取得して remember にセット
-    var playMinutes by remember(settings) { mutableStateOf(settings.playMinutes) }
-    var playSeconds by remember(settings) { mutableStateOf(settings.playSeconds) }
-    var coolMinutes by remember(settings) { mutableStateOf(settings.coolMinutes) }
-    var coolSeconds by remember(settings) { mutableStateOf(settings.coolSeconds) }
-    var bellStartVolume by remember(settings) { mutableStateOf(settings.bellStartVolume) }
-    var bellCoolVolume by remember(settings) { mutableStateOf(settings.bellCoolVolume) }
-    var repeatCount by remember(settings) { mutableStateOf(settings.repeatCount) }
+    var playMinutes by remember(settings.playMinutes) { mutableStateOf(settings.playMinutes) }
+    var playSeconds by remember(settings.playSeconds) { mutableStateOf(settings.playSeconds) }
+    var coolMinutes by remember(settings.coolMinutes) { mutableStateOf(settings.coolMinutes) }
+    var coolSeconds by remember(settings.coolSeconds) { mutableStateOf(settings.coolSeconds) }
+    var bellStartVolume by remember(settings.bellStartVolume) { mutableStateOf(settings.bellStartVolume) }
+    var bellCoolVolume by remember(settings.bellCoolVolume) { mutableStateOf(settings.bellCoolVolume) }
+    var repeatCount by remember(settings.repeatCount) { mutableStateOf(settings.repeatCount) }
 
     fun updateStore() {
         viewModel.saveSetting(
@@ -57,8 +56,16 @@ fun SettingsScreen(viewModel: TimerViewModel, onBack: () -> Unit) {
         )
     }
 
-    LaunchedEffect(playMinutes, playSeconds, coolMinutes, coolSeconds, bellStartVolume, bellCoolVolume, repeatCount) {
-        delay(500L)
+    LaunchedEffect(
+        playMinutes,
+        playSeconds,
+        coolMinutes,
+        coolSeconds,
+        bellStartVolume,
+        bellCoolVolume,
+        repeatCount
+    ) {
+        kotlinx.coroutines.delay(500L)
         viewModel.saveSetting(
             TimerSettings(
                 playMinutes,

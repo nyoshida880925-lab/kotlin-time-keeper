@@ -211,7 +211,7 @@ fun MainScreen(viewModel: TimerViewModel, onOpenSettings: () -> Unit) {
                     text = "00:00",
                     fontSize = 84.sp,
                     fontFamily = Digital7MonoFont,
-                    color = Color(0xFF1D3A48)
+                    color = Color(0xFF1A3442)
                 )
                 Text(
                     text = String.format(

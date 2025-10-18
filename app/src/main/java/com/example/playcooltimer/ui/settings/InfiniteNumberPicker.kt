@@ -12,6 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,7 @@ fun InfiniteNumberPicker(
     onValueChange: (Int) -> Unit,
     range: IntRange = 0..59,
     modifier: Modifier = Modifier,
-    itemHeightDp: Dp = 56.dp,   // 1行の高さを固定
+    itemHeightDp: Dp = 54.dp,   // 1行の高さを固定
     visibleCount: Int = 3       // 奇数にする（3/5 など）
 ) {
     val itemCount = range.count()
@@ -63,7 +64,8 @@ fun InfiniteNumberPicker(
                 text = "%02d".format(displayList[i]),
                 fontSize = 32.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 4.dp)
+                modifier = Modifier.padding(vertical = 1.dp),
+                color = Color(0xFFDCDCDC)
             )
         }
     }
